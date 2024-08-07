@@ -11,6 +11,7 @@ contract Quiz {
     }
 
     mapping(address => uint256)[] public bets;
+    Quiz_item[] public qs;
     uint public vault_balance;
 
     constructor() {
@@ -24,14 +25,17 @@ contract Quiz {
     }
 
     function addQuiz(Quiz_item memory q) public {
-        require(msg.sender > address(0x0a));
+        require(msg.sender > address(0x0a), "no precompiled contract");
+        qs.push(q);
     }
 
     function getAnswer(uint quizId) public view returns (string memory) {}
 
     function getQuiz(uint quizId) public view returns (Quiz_item memory) {}
 
-    function getQuizNum() public view returns (uint) {}
+    function getQuizNum() public view returns (uint) {
+        return qs.length;
+    }
 
     function betToPlay(uint quizId) public payable {}
 
