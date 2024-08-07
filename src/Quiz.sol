@@ -36,4 +36,8 @@ contract Quiz {
     function solveQuiz(uint quizId, string memory ans) public returns (bool) {}
 
     function claim() public {}
+
+    receive() external payable {
+        vault_balance += msg.value;
+    }
 }

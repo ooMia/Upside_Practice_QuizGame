@@ -14,6 +14,7 @@ contract QuizTest is Test {
         vm.deal(address(this), 100 ether);
         quiz = new Quiz();
         address(quiz).call{value: 5 ether}("");
+        // assertEq(address(this).balance, 95 ether);
         q1 = quiz.getQuiz(1);
     }
 
