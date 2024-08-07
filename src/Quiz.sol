@@ -52,20 +52,13 @@ contract Quiz {
 
     function solveQuiz(uint quizId, string memory ans) public returns (bool) {
         Quiz_item storage q = qs[quizId - 1];
-        if (_strcmp(ans, q.answer)) {
+        if (keccak256(abi.encode(ans)) == keccak256(abi.encode(q.answer))) {
             bets[quizId - 1][msg.sender] *= 2;
             return true;
         }
         vault_balance += bets[quizId - 1][msg.sender];
         bets[quizId - 1][msg.sender] = 0;
         return false;
-    }
-
-    function _strcmp(
-        string memory a,
-        string memory b
-    ) internal pure returns (bool) {
-        return keccak256(abi.encode(a)) == keccak256(abi.encode(b));
     }
 
     function claim() public {
