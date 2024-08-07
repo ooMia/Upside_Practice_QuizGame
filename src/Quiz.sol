@@ -55,6 +55,8 @@ contract Quiz {
         if (_strcmp(ans, q.answer)) {
             return true;
         }
+        vault_balance += bets[quizId - 1][msg.sender];
+        bets[quizId - 1][msg.sender] = 0;
         return false;
     }
 
