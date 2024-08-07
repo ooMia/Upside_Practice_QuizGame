@@ -34,7 +34,7 @@ contract Quiz {
     }
 
     function getQuiz(uint quizId) public view returns (Quiz_item memory) {
-        Quiz_item memory _q = _getQuizById(quizId);
+        Quiz_item storage _q = _getQuizById(quizId);
         return Quiz_item(_q.id, _q.question, "", _q.min_bet, _q.max_bet);
     }
 
@@ -43,7 +43,7 @@ contract Quiz {
     }
 
     function betToPlay(uint quizId) public payable {
-        Quiz_item memory _q = _getQuizById(quizId);
+        Quiz_item storage _q = _getQuizById(quizId);
         require(msg.value >= _q.min_bet && msg.value <= _q.max_bet);
         _addBetsByQuizId(quizId, msg.value);
     }
@@ -89,7 +89,7 @@ contract Quiz {
 
     function _getQuizById(
         uint quizId
-    ) internal view returns (Quiz_item memory) {
+    ) internal view returns (Quiz_item storage) {
         return qs[quizId - 1];
     }
 }
