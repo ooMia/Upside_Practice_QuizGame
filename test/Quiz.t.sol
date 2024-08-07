@@ -14,7 +14,6 @@ contract QuizTest is Test {
         vm.deal(address(this), 100 ether);
         quiz = new Quiz();
         address(quiz).call{value: 5 ether}("");
-        // assertEq(address(this).balance, 95 ether);
         q1 = quiz.getQuiz(1);
     }
 
@@ -33,7 +32,6 @@ contract QuizTest is Test {
 
     function testGetQuizSecurity() public {
         Quiz.Quiz_item memory q = quiz.getQuiz(1);
-        // assertTrue(bytes(q.question).length > 0, "empty question");
         assertEq(q.answer, "");
     }
 
