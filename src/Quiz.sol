@@ -30,7 +30,10 @@ contract Quiz {
         bets.push();
     }
 
-    function getAnswer(uint quizId) public view returns (string memory) {}
+    function getAnswer(uint quizId) public view returns (string memory) {
+        Quiz_item storage q = qs[quizId - 1];
+        return q.answer;
+    }
 
     function getQuiz(uint quizId) public view returns (Quiz_item memory) {
         Quiz_item storage q = qs[quizId - 1];
