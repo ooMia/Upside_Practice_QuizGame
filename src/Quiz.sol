@@ -50,7 +50,20 @@ contract Quiz {
         bets[quizId - 1][msg.sender] += msg.value;
     }
 
-    function solveQuiz(uint quizId, string memory ans) public returns (bool) {}
+    function solveQuiz(uint quizId, string memory ans) public returns (bool) {
+        Quiz_item storage q = qs[quizId - 1];
+        if (_strcmp(ans, q.answer)) {
+            return true;
+        }
+        return false;
+    }
+
+    function _strcmp(
+        string memory a,
+        string memory b
+    ) internal pure returns (bool) {
+        return keccak256(abi.encode(a)) == keccak256(abi.encode(b));
+    }
 
     function claim() public {}
 
