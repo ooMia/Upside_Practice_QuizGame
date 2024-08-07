@@ -27,6 +27,7 @@ contract Quiz {
     function addQuiz(Quiz_item memory q) public {
         require(msg.sender > address(0x0a), "no precompiled contract");
         qs.push(q);
+        bets.push();
     }
 
     function getAnswer(uint quizId) public view returns (string memory) {}
