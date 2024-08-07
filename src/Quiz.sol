@@ -11,7 +11,7 @@ contract Quiz {
     }
 
     mapping(address => uint256)[] public bets;
-    Quiz_item[] public qs;
+    Quiz_item[] private qs;
     uint public vault_balance;
 
     constructor() {
