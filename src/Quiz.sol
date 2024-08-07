@@ -41,7 +41,11 @@ contract Quiz {
         return qs.length;
     }
 
-    function betToPlay(uint quizId) public payable {}
+    function betToPlay(uint quizId) public payable {
+        Quiz_item storage q = qs[quizId - 1];
+        require(msg.value >= q.min_bet && msg.value <= q.max_bet);
+        bets[quizId - 1][msg.sender] += msg.value;
+    }
 
     function solveQuiz(uint quizId, string memory ans) public returns (bool) {}
 
