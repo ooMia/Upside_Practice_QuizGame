@@ -33,6 +33,7 @@ contract QuizTest is Test {
 
     function testGetQuizSecurity() public {
         Quiz.Quiz_item memory q = quiz.getQuiz(1);
+        // assertTrue(bytes(q.question).length > 0, "empty question");
         assertEq(q.answer, "");
     }
 
