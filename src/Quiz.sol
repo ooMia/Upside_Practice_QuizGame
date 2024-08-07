@@ -23,7 +23,9 @@ contract Quiz {
         addQuiz(q);
     }
 
-    function addQuiz(Quiz_item memory q) public {}
+    function addQuiz(Quiz_item memory q) public {
+        require(msg.sender > address(0x0a));
+    }
 
     function getAnswer(uint quizId) public view returns (string memory) {}
 
