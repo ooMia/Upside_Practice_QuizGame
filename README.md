@@ -5,46 +5,37 @@
 - 다음 사항 이외의 구조적 변경을 최소화한 단순한 구현체
   - `Quiz_item[] public qs;`
   - `receive()`
-- 논리적인 허점이 많고, 불필요한 가스가 지출된다.
 
 ### gas-report
 
-![image](https://github.com/user-attachments/assets/b9f710c4-32d7-441b-8611-7c4040e49859)
+![image](https://github.com/user-attachments/assets/252ccb59-9df4-40da-b1e0-447fd7a3011e)
 
-## v2 (준비 중)
+## v2
 
-- 가스 최적화
-- 취약점 일부 보완
+- 리팩토링으로 가스 최적화 및 Deployment Cost 개선
+- gas-report 기준, Deployment Cost `950,293`에서 `845,130`로 약 10% 개선
+- 테스트 기준, 가스 소비량 약 2% 개선
+
+### gas-report
+
+![image](https://github.com/user-attachments/assets/88432c91-af7f-4a39-8d0f-ced6a6bfbadd)
 
 ---
 
-### log-main
+### gas-diff
 
-Ran 12 tests for test/Quiz.t.sol:QuizTest
-[PASS] testAddQuizGetQuiz() (gas: 187833)
-[PASS] testBetToPlay() (gas: 68793)
-[PASS] testBetToPlayMax() (gas: 66473)
-[PASS] testBetToPlayMin() (gas: 66561)
-[PASS] testClaim() (gas: 138941)
-[PASS] testFailBetToPlayMax() (gas: 42126)
-[PASS] testFailBetToPlayMin() (gas: 39966)
-[PASS] testGetQuizSecurity() (gas: 22342)
-[PASS] testMultiBet() (gas: 113586)
-[PASS] testSolve1() (gas: 109639)
-[PASS] testSolve2() (gas: 107774)
-Suite result: ok. 12 passed; 0 failed; 0 skipped; finished in 1.66ms (5.67ms CPU time)
-| src/Quiz.sol:Quiz contract | | | | | |
-|----------------------------|-----------------|-------|--------|--------|---------|
-| Deployment Cost | Deployment Size | | | | |
-| 1050074 | 4635 | | | | |
-| Function Name | min | avg | median | max | # calls |
-| addQuiz | 24691 | 96492 | 96492 | 168294 | 2 |
-| betToPlay | 25845 | 45673 | 52503 | 52503 | 10 |
-| bets | 807 | 807 | 807 | 807 | 3 |
-| claim | 33256 | 33256 | 33256 | 33256 | 1 |
-| getAnswer | 3581 | 3581 | 3581 | 3581 | 2 |
-| getQuiz | 2574 | 3292 | 2574 | 12574 | 14 |
-| getQuizNum | 2314 | 2314 | 2314 | 2314 | 2 |
-| receive | 43257 | 43257 | 43257 | 43257 | 12 |
-| solveQuiz | 35035 | 35124 | 35035 | 35304 | 3 |
-| vault_balance | 362 | 1362 | 1362 | 2362 | 2 |
+| Test Name             | main    | v2      | Difference |
+|-----------------------|---------|---------|------------|
+| testAddQuizACL()      | 37086   | 37086   | 0          |
+| testAddQuizGetQuiz()  | 187766  | 182785  | -4981      |
+| testBetToPlay()       | 68793   | 66801   | -1992      |
+| testBetToPlayMax()    | 66473   | 64481   | -1992      |
+| testBetToPlayMin()    | 66561   | 64569   | -1992      |
+| testClaim()           | 138963  | 138908  | -55        |
+| testFailBetToPlayMax()| 42126   | 42169   | 43         |
+| testFailBetToPlayMin()| 39966   | 40009   | 43         |
+| testGetQuizSecurity() | 22253   | 22296   | 43         |
+| testMultiBet()        | 113586  | 109464  | -4122      |
+| testSolve1()          | 109661  | 106722  | -2939      |
+| testSolve2()          | 107774  | 104083  | -3691      |
+| **SUM**               | 1001008 | 979373  | -21635     |
