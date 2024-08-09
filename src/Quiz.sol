@@ -10,7 +10,7 @@ contract Quiz {
         uint max_bet;
     }
 
-    mapping(address => uint256)[] public bets;
+    mapping(uint => mapping(address => uint256)) public bets;
     Quiz_item[] private qs;
     uint public vault_balance;
 
@@ -27,17 +27,15 @@ contract Quiz {
     function addQuiz(Quiz_item memory q) public {
         require(msg.sender > address(0x0a), "no precompiled contract");
         qs.push(q);
-        bets.push();
     }
 
     function getAnswer(uint quizId) public view returns (string memory) {
-        Quiz_item storage q = qs[quizId - 1];
-        return q.answer;
+        return _getQuizById(quizId).answer;
     }
 
     function getQuiz(uint quizId) public view returns (Quiz_item memory) {
-        Quiz_item storage q = qs[quizId - 1];
-        return Quiz_item(q.id, q.question, "", q.min_bet, q.max_bet);
+        Quiz_item storage _q = _getQuizById(quizId);
+        return Quiz_item(_q.id, _q.question, "", _q.min_bet, _q.max_bet);
     }
 
     function getQuizNum() public view returns (uint) {
@@ -45,28 +43,53 @@ contract Quiz {
     }
 
     function betToPlay(uint quizId) public payable {
-        Quiz_item storage q = qs[quizId - 1];
-        require(msg.value >= q.min_bet && msg.value <= q.max_bet);
-        bets[quizId - 1][msg.sender] += msg.value;
+        Quiz_item storage _q = _getQuizById(quizId);
+        require(msg.value >= _q.min_bet && msg.value <= _q.max_bet);
+        _addBetsByQuizId(quizId, msg.value);
     }
 
     function solveQuiz(uint quizId, string memory ans) public returns (bool) {
-        Quiz_item storage q = qs[quizId - 1];
-        if (keccak256(abi.encode(ans)) == keccak256(abi.encode(q.answer))) {
-            bets[quizId - 1][msg.sender] *= 2;
+        uint cur = _getBetsByQuizId(quizId);
+        if (
+            keccak256(abi.encode(ans)) ==
+            keccak256(abi.encode(getAnswer(quizId)))
+        ) {
+            _addBetsByQuizId(quizId, cur);
             return true;
+        } else {
+            vault_balance += cur;
+            _setBetsByQuizId(quizId, 0);
+            return false;
         }
-        vault_balance += bets[quizId - 1][msg.sender];
-        bets[quizId - 1][msg.sender] = 0;
-        return false;
     }
 
     function claim() public {
-        msg.sender.call{value: bets[getQuizNum() - 1][msg.sender]}("");
-        bets[getQuizNum() - 1][msg.sender] = 0;
+        uint quizId = getQuizNum();
+        uint256 prize = _getBetsByQuizId(quizId);
+        _setBetsByQuizId(quizId, 0);
+        vault_balance -= prize;
+        msg.sender.call{value: prize}("");
     }
 
     receive() external payable {
         vault_balance += msg.value;
+    }
+
+    function _getBetsByQuizId(uint quizId) internal view returns (uint256) {
+        return bets[quizId - 1][msg.sender];
+    }
+
+    function _setBetsByQuizId(uint quizId, uint256 amount) internal {
+        bets[quizId - 1][msg.sender] = amount;
+    }
+
+    function _addBetsByQuizId(uint quizId, uint256 amount) internal {
+        bets[quizId - 1][msg.sender] += amount;
+    }
+
+    function _getQuizById(
+        uint quizId
+    ) internal view returns (Quiz_item storage) {
+        return qs[quizId - 1];
     }
 }
